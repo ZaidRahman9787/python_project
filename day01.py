@@ -6,8 +6,8 @@ def print_with_delay(text, delay=0.1):
         time.sleep(delay)
     print()  
 name = input("Enter your name:-")
-if name == "":
-    print("Error: Nameh cannot be empty.")
+if name.strip() == "":
+    print("Error: Name cannot be empty.")
     exit()
 
 try:
@@ -23,31 +23,31 @@ elif age > 18 and age<25:
     carrier_stage += "Early Professional"
 else:
     carrier_stage += "professional"
-city = input("Enter the city you live in:-").strip().capitalize()
+city = input("Enter the city you live in:-").capitalize()
 
-primary_skil = input("what are your primary skills:-")
+primary_skill = input("what are your primary skills:-")
 
 print_with_delay("tell us how good you are at your skill",0.01)
 try:
-    skill_level = input("choose between begginer, intermediate or expert: ").capitalize()
+    skill_level = input("choose between beginner, intermediate or expert: ").lower()
     
-    if skill_level not in ("begginer", "intermediate", "expert"):
+    if skill_level not in ("beginner", "intermediate", "expert"):
         raise ValueError 
 except ValueError:
     print("Error: Invalid option.")
     exit()
 readiness_tag= ""
-if skill_level=="begginer":
+if skill_level=="beginner":
     readiness_tag += "foundation"
 elif skill_level=="intermediate":
     readiness_tag += "Junior intern"
 else:
     readiness_tag += "production ready"
 learning_recommendation=""
-if skill_level=="begginer":
+if skill_level=="beginner":
     learning_recommendation += "Focus on core fundamentals and consistency"
 elif skill_level=="intermediate":
-    learning_recommendation += "Focus on core fundamentals and consistency"
+    learning_recommendation += "Start building real-world projects"
 else:
     learning_recommendation += "Contribute to production-grade systems"
 print("=" * 45)
@@ -57,7 +57,7 @@ print("=" * 45)
 print("Name          :",name)
 print("Age           :",age)
 print("City          :",city)
-print("Primary Skill :",primary_skil)
+print("Primary Skill :",primary_skill)
 print("Skill Level   :",skill_level)
 
 print()
