@@ -2,20 +2,17 @@ import uuid
 import json
 from datetime import datetime
 
-def get_numeric_input(prompt):
+def get_number(prompt):
     try:
         return float(input(prompt))
     except ValueError:
         return None
 
-def generate_audit_id():
-    return str(uuid.uuid4())
-
 def run_audit():
-    print("\nClinical Data Audit System")
-    print("-" * 35)
+    print("Clinical Data Audit System")
+    print("-" * 40)
 
-    audit_id = generate_audit_id()
+    audit_id = str(uuid.uuid4())
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     errors = []
@@ -25,35 +22,34 @@ def run_audit():
     if patient_name == "":
         errors.append("Patient name cannot be empty")
 
-    age = get_numeric_input("Enter age: ")
-    heart_rate = get_numeric_input("Enter heart rate (bpm): ")
-    systolic = get_numeric_input("Enter systolic BP: ")
-    diastolic = get_numeric_input("Enter diastolic BP: ")
-
+    age = get_number("Enter age: ")
+    heart_rate = get_number("Enter heart rate (bpm): ")
+    systolic = get_number("Enter systolic BP: ")
+    diastolic = get_number("Enter diastolic BP: ")
     allergy = input("Any allergies? (yes/no): ").strip().lower()
 
     if age is None or not (0 <= age <= 120):
-        errors.append("Age must be a number between 0 and 120")
+        errors.append("Invalid age")
 
     if heart_rate is None:
-        errors.append("Heart rate must be numeric")
+        errors.append("Invalid heart rate")
 
     if systolic is None or diastolic is None:
-        errors.append("Blood pressure values must be numeric")
+        errors.append("Invalid blood pressure values")
     elif systolic <= diastolic:
         errors.append("Systolic BP must be greater than diastolic BP")
 
     if allergy not in ("yes", "no"):
-        errors.append("Allergy field must be either 'yes' or 'no'")
+        errors.append("Invalid allergy input")
 
     if heart_rate is not None and not (40 <= heart_rate <= 180):
-        warnings.append("Heart rate outside safe range (40–180 bpm)")
+        warnings.append("Heart rate outside safe range")
 
     if systolic is not None and not (70 <= systolic <= 200):
-        warnings.append("Systolic BP outside safe range (70–200)")
+        warnings.append("Systolic BP outside safe range")
 
     if diastolic is not None and not (40 <= diastolic <= 130):
-        warnings.append("Diastolic BP outside safe range (40–130)")
+        warnings.append("Diastolic BP outside safe range")
 
     if errors:
         status = "FAIL"
@@ -62,46 +58,43 @@ def run_audit():
     else:
         status = "PASS"
 
-    print("\nAudit Summary")
-    print("-" * 35)
-    print(f"Audit ID   : {audit_id}")
-    print(f"Timestamp  : {timestamp}")
-    print(f"Status     : {status}")
+    print("\nAudit Report")
+    print("-" * 40)
+    print("Audit ID:", audit_id)
+    print("Timestamp:", timestamp)
+    print("Patient Name:", patient_name)
+    print("Audit Status:", status)
 
     if errors:
-        print("\nValidation Errors:")
-        for err in errors:
-            print(f"- {err}")
+        print("\nFlags:")
+        for e in errors:
+            print("-", e)
+    else:
+        print("\nFlags: None")
 
     if warnings:
-        print("\nSafety Warnings:")
-        for warn in warnings:
-            print(f"- {warn}")
+        print("\nWarnings:")
+        for w in warnings:
+            print("-", w)
+    else:
+        print("\nWarnings: None")
 
-    if status == "PASS":
-        print("\nNo issues detected. Data is clean.")
+    print("\nDisclaimer: This is a non-diagnostic audit report only. Not medically certified.")
 
     audit_record = {
         "audit_id": audit_id,
         "timestamp": timestamp,
         "patient_name": patient_name,
-        "age": age,
-        "heart_rate": heart_rate,
-        "blood_pressure": {
-            "systolic": systolic,
-            "diastolic": diastolic
-        },
-        "allergy": allergy,
         "status": status,
-        "errors": errors,
+        "flags": errors,
         "warnings": warnings
     }
 
     with open("audit_log.json", "a") as file:
-        file.write(json.dumps(audit_record, indent=4))
+        file.write(json.dumps(audit_record))
         file.write("\n")
 
-    print("\nAudit record saved to audit_log.json")
+    print("\nAudit record appended to audit_log.json")
 
 if __name__ == "__main__":
     run_audit()
